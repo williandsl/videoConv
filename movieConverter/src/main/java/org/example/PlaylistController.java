@@ -19,7 +19,7 @@ public class PlaylistController {
         try {
             List<VideoInfo> videoUrls = playlistService.getPlaylistVideos(playlistUrl);
             for (VideoInfo videoUrl : videoUrls) {
-               // playlistService.convertVideoToMp3(videoUrl);
+                playlistService.convertVideoToMp3(videoUrl.getUrl());
             }
             return "Playlist conversion to MP3 started.";
         } catch (Exception e) {

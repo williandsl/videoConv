@@ -6,19 +6,14 @@ import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
-
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class PlaylistService {
+public class PlaylistService2 {
     public List<VideoInfo> getPlaylistVideos(String playlistUrl) throws IOException {
         List<VideoInfo> videos = new ArrayList<>();
 
@@ -72,7 +67,7 @@ public class PlaylistService {
         // Aqui você deve procurar o bloco JSON que contém as informações da playlist
         // Por exemplo, o JSON pode estar em um <script> específico na página HTML
         String jsonString = null;
-        for (org.jsoup.nodes.Element script : doc.select("script")) {
+        for (Element script : doc.select("script")) {
             String scriptContent = script.html();
             if (scriptContent.contains("ytInitialData")) {
                 int start = scriptContent.indexOf("ytInitialData =") + 15;
@@ -87,26 +82,6 @@ public class PlaylistService {
         }
 
         return jsonString;
-    }
-
-    public void convertVideoToMp3(String videoUrl) throws Exception {
-        // Certifique-se de que a pasta downloaded_videos exista
-        File downloadDir = new File("downloaded_videos");
-        if (!downloadDir.exists()) {
-            downloadDir.mkdirs();
-        }
-
-        String command = String.format("yt-dlp -x --audio-format mp3 --audio-quality 192K --output \"downloaded_videos/%%(title)s.%%(ext)s\" %s", videoUrl);
-
-        ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);
-        Process process = pb.start();
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            System.out.println(line);
-        }
-        process.waitFor();
     }
 
 
