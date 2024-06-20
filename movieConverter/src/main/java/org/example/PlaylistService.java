@@ -94,7 +94,7 @@ public class PlaylistService {
         if (responseCode == HttpURLConnection.HTTP_OK) {
             // Caminho completo do arquivo de saída
             String outputFilePath = outputDirectory + File.separator + fileName;
-
+//teste
             try (InputStream inputStream = connection.getInputStream();
                  OutputStream outputStream = new FileOutputStream(outputFilePath)) {
 
