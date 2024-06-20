@@ -85,31 +85,30 @@ public class PlaylistService {
         return jsonString;
     }
 
-    static void downloadVideo(String videoUrl, String outputDirectory, String fileName) throws IOException {
-        URL url = new URL(videoUrl);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
+    public static void downloadVideo(String videoUrl, String outputDirectory, String fileName) throws IOException, InterruptedException {
+        // Comando para baixar o vídeo usando youtube-dl
+        // Comando para baixar o áudio usando yt-dlp
+        String command = String.format("yt-dlp -x --audio-format mp3 -o \"%s/%s\" %s", outputDirectory, fileName, videoUrl);
 
-        int responseCode = connection.getResponseCode();
-        if (responseCode == HttpURLConnection.HTTP_OK) {
-            // Caminho completo do arquivo de saída
-            String outputFilePath = outputDirectory + File.separator + fileName;
-//teste
-            try (InputStream inputStream = connection.getInputStream();
-                 OutputStream outputStream = new FileOutputStream(outputFilePath)) {
+        // Executar o comando
+        Process process = Runtime.getRuntime().exec(command);
 
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, bytesRead);
-                }
-            } finally {
-                connection.disconnect(); // Desconectar a conexão HTTP
-            }
+        // Esperar o término do processo
+        int exitCode = process.waitFor();
+
+        if (exitCode == 0) {
+            System.out.println("Áudio baixado com sucesso.");
         } else {
-            throw new IOException("Falha ao baixar o vídeo, código de status: " + responseCode);
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.err.println(line);
+                }
+            }
+            throw new IOException("Falha ao baixar o áudio, código de saída: " + exitCode);
         }
     }
+
 }
 
 //    public void convertVideoToMp3(String videoUrl) throws Exception {

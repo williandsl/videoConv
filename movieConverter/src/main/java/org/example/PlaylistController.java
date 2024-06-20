@@ -22,14 +22,14 @@ public class PlaylistController {
     private PlaylistService playlistService;
     @PostMapping("/convertPlaylist")
     public String convertPlaylistToMp3(@RequestParam String playlistUrl) {
-        String outputDirectory = "downloaded_videos"; // Pasta onde o vídeo será salvo
+        String outputDirectory = "downloaded_video"; // Pasta onde o vídeo será salvo
         String videoUrl = "https://www.youtube.com/watch?v=VIDEO_ID"; // Substitua pelo URL do vídeo
 
 
         try {
             //List<VideoInfo> videoUrls = playlistService.getPlaylistVideos(playlistUrl);
             //for (VideoInfo videoUrl : videoUrls) {
-                playlistService.downloadVideo("https://www.youtube.com/watch?v=pq2JKVI6F5s", outputDirectory,"video.mp4");
+                playlistService.downloadVideo("https://www.youtube.com/watch?v=pq2JKVI6F5s", outputDirectory,"audio.mp3");
             //}
             return "Playlist conversion to MP3 started.";
         } catch (Exception e) {
