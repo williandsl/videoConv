@@ -5,15 +5,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,25 +85,55 @@ public class PlaylistService {
         return jsonString;
     }
 
-    public void convertVideoToMp3(String videoUrl) throws Exception {
-        // Certifique-se de que a pasta downloaded_videos exista
-        File downloadDir = new File("downloaded_videos");
-        if (!downloadDir.exists()) {
-            downloadDir.mkdirs();
+    public void downloadVideo(String videoUrl, String outputDirectory) throws IOException {
+        URL url = new URL(videoUrl);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+
+        int responseCode = connection.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            // Extrair o nome do arquivo do URL do vídeo
+            String fileName = videoUrl.substring(videoUrl.lastIndexOf('/') + 1);
+
+            // Caminho completo do arquivo de saída
+            String outputFilePath = outputDirectory + File.separator + fileName;
+
+            try (InputStream inputStream = connection.getInputStream();
+                 OutputStream outputStream = new FileOutputStream(outputFilePath)) {
+
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+            } finally {
+                connection.disconnect(); // Desconectar a conexão HTTP
+            }
+        } else {
+            throw new IOException("Falha ao baixar o vídeo, código de status: " + responseCode);
         }
-
-        String command = String.format("yt-dlp -x --audio-format mp3 --audio-quality 192K --output \"downloaded_videos/%%(title)s.%%(ext)s\" %s", videoUrl);
-
-        ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);
-        Process process = pb.start();
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            System.out.println(line);
-        }
-        process.waitFor();
     }
+
+//    public void convertVideoToMp3(String videoUrl) throws Exception {
+//        // Certifique-se de que a pasta downloaded_videos exista
+//        File downloadDir = new File("downloaded_videos");
+//        if (!downloadDir.exists()) {
+//            downloadDir.mkdirs();
+//        }
+//
+//        String command = String.format("yt-dlp -x --audio-format mp3 --audio-quality 192K --output \"downloaded_videos/%%(title)s.%%(ext)s\" %s", videoUrl);
+//
+//        ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);
+//        Process process = pb.start();
+//
+//        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+//        String line;
+//        while ((line = reader.readLine()) != null) {
+//            System.out.println(line);
+//        }
+//        process.waitFor();
+//    }
+
 
 
 }

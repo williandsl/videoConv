@@ -16,10 +16,12 @@ public class PlaylistController {
     private PlaylistService playlistService;
     @PostMapping("/convertPlaylist")
     public String convertPlaylistToMp3(@RequestParam String playlistUrl) {
+        String outputDirectory = "downloaded_videos"; // Pasta onde o vídeo será salvo
+
         try {
             List<VideoInfo> videoUrls = playlistService.getPlaylistVideos(playlistUrl);
             for (VideoInfo videoUrl : videoUrls) {
-                playlistService.convertVideoToMp3(videoUrl.getUrl());
+                playlistService.downloadVideo(videoUrl.getUrl(), outputDirectory);
             }
             return "Playlist conversion to MP3 started.";
         } catch (Exception e) {
