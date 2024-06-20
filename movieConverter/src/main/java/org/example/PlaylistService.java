@@ -85,16 +85,13 @@ public class PlaylistService {
         return jsonString;
     }
 
-    public void downloadVideo(String videoUrl, String outputDirectory) throws IOException {
+    static void downloadVideo(String videoUrl, String outputDirectory, String fileName) throws IOException {
         URL url = new URL(videoUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
 
         int responseCode = connection.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_OK) {
-            // Extrair o nome do arquivo do URL do vídeo
-            String fileName = videoUrl.substring(videoUrl.lastIndexOf('/') + 1);
-
             // Caminho completo do arquivo de saída
             String outputFilePath = outputDirectory + File.separator + fileName;
 
@@ -113,6 +110,7 @@ public class PlaylistService {
             throw new IOException("Falha ao baixar o vídeo, código de status: " + responseCode);
         }
     }
+}
 
 //    public void convertVideoToMp3(String videoUrl) throws Exception {
 //        // Certifique-se de que a pasta downloaded_videos exista
@@ -135,5 +133,3 @@ public class PlaylistService {
 //    }
 
 
-
-}
