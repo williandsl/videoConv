@@ -1,14 +1,14 @@
 package org.example;
 
-import com.github.kiulian.downloader.YoutubeDownloader;
-import com.github.kiulian.downloader.downloader.request.RequestPlaylistInfo;
-import com.github.kiulian.downloader.downloader.request.RequestVideoFileDownload;
-import com.github.kiulian.downloader.downloader.request.RequestVideoInfo;
-import com.github.kiulian.downloader.downloader.response.Response;
-import com.github.kiulian.downloader.model.playlist.PlaylistInfo;
-import com.github.kiulian.downloader.model.playlist.PlaylistVideoDetails;
-import com.github.kiulian.downloader.model.videos.VideoInfo;
-import com.github.kiulian.downloader.model.videos.formats.AudioFormat;
+import org.example.client.YoutubeDownloader;
+import org.example.client.downloader.request.RequestPlaylistInfo;
+import org.example.client.downloader.request.RequestVideoFileDownload;
+import org.example.client.downloader.request.RequestVideoInfo;
+import org.example.client.downloader.response.Response;
+import org.example.client.model.playlist.PlaylistInfo;
+import org.example.client.model.playlist.PlaylistVideoDetails;
+import org.example.client.model.videos.VideoInfo;
+import org.example.client.model.videos.formats.AudioFormat;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
